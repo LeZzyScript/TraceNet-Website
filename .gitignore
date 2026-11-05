@@ -23,3 +23,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# nested mobile repo (cloned separately)
+/tracenet-mobile
+
