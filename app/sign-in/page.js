@@ -6,14 +6,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { Field, Input } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import { isFirebaseConfigured } from "@/lib/firebase";
+import { friendlyAuthError, signInCitizen } from "@/lib/auth";
 
 export default function SignInPage() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSignIn() {
-    // No backend/database yet — check the local demo-account flag set by
-    // the Create account page instead of a real credential check.
+  async function handleSignIn() {
+    if (isFirebaseConfigured) {
+      if (!email || !password) {
+        setError("Please enter your email and password.");
+        return;
+      }
+      setSubmitting(true);
+      setError("");
+      try {
+        await signInCitizen(email, password);
+        router.push("/dashboard");
+      } catch (err) {
+        setError(friendlyAuthError(err));
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // Demo mode (Firebase not configured): check the local demo-account flag
+    // set by the Create account page instead of a real credential check.
     const hasAccount = window.localStorage.getItem("tracenet_demo_account") === "true";
     if (hasAccount) {
       setError("");
@@ -36,10 +59,20 @@ export default function SignInPage() {
 
         <form className="bg-white border border-line rounded-lg shadow-card p-8">
           <Field label="Email / phone number">
-            <Input placeholder="juan@example.com" />
+            <Input
+              type="email"
+              placeholder="juan@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Field>
           <Field label="Password">
-            <Input type="password" placeholder="••••••••" />
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Field>
           <div className="text-right -mt-2 mb-5">
             <span className="link-inline text-xs">Forgot password?</span>
@@ -51,8 +84,14 @@ export default function SignInPage() {
             </div>
           )}
 
-          <Button type="button" onClick={handleSignIn} variant="primary" className="w-full">
-            Sign in
+          <Button
+            type="button"
+            onClick={handleSignIn}
+            variant="primary"
+            className="w-full"
+            disabled={submitting}
+          >
+            {submitting ? "Signing in…" : "Sign in"}
           </Button>
         </form>
 

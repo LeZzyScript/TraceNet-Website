@@ -33,15 +33,20 @@ export function Select({ children, ...props }) {
  * can only attach an existing photo (from their device or a photo they
  * already took), not capture live from a webcam.
  */
-export function FileUpload({ label = "Upload photo", hint }) {
+export function FileUpload({ label = "Upload photo", hint, onChange, fileName }) {
   return (
     <label className="flex flex-col items-center justify-center gap-2 w-full border-[1.6px] border-dashed border-[#B9C8E6] bg-[#EDF3FC] rounded-md py-8 px-4 cursor-pointer text-center hover:bg-[#E4EDFB] transition-colors">
       <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-600 shadow-sm text-lg">
         📷
       </span>
-      <span className="text-sm font-bold text-ink-900">{label}</span>
+      <span className="text-sm font-bold text-ink-900">{fileName || label}</span>
       {hint && <span className="text-xs text-ink-400">{hint}</span>}
-      <input type="file" accept="image/*" className="hidden" />
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => onChange && onChange(e.target.files?.[0] || null)}
+      />
     </label>
   );
 }

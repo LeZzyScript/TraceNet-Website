@@ -24,10 +24,19 @@ export const CEBU_CITY_BARANGAYS = [
  * (citizens may be on a desktop browser) — they type a few letters and
  * pick from matching Cebu City barangays, or type the full name directly.
  */
-export default function BarangaySelect({ defaultValue = "", placeholder = "Start typing a barangay..." }) {
+export default function BarangaySelect({
+  defaultValue = "",
+  placeholder = "Start typing a barangay...",
+  onChange,
+}) {
   const [query, setQuery] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
+
+  function update(value) {
+    setQuery(value);
+    if (onChange) onChange(value);
+  }
 
   const matches =
     query.trim().length === 0
@@ -53,7 +62,7 @@ export default function BarangaySelect({ defaultValue = "", placeholder = "Start
         placeholder={placeholder}
         value={query}
         onChange={(e) => {
-          setQuery(e.target.value);
+          update(e.target.value);
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
@@ -65,7 +74,7 @@ export default function BarangaySelect({ defaultValue = "", placeholder = "Start
               type="button"
               key={b}
               onMouseDown={() => {
-                setQuery(b);
+                update(b);
                 setOpen(false);
               }}
               className="w-full text-left px-3.5 py-2.5 text-sm text-ink-900 hover:bg-brand-100 transition-colors"

@@ -1,18 +1,49 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Field, Input, Select } from "@/components/ui/Input";
 import BarangaySelect from "@/components/ui/BarangaySelect";
 import Button from "@/components/ui/Button";
+import { isFirebaseConfigured } from "@/lib/firebase";
+import { friendlyAuthError, registerCitizen } from "@/lib/auth";
 
 export default function SignUpPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleCreateAccount() {
-    // No backend/database yet — simulate an account existing in this
-    // browser only, so Sign In can check against it.
+  async function handleCreateAccount() {
+    if (isFirebaseConfigured) {
+      if (!name || !email || !contactNumber || !password) {
+        setError("Please fill in all fields.");
+        return;
+      }
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters.");
+        return;
+      }
+      setSubmitting(true);
+      setError("");
+      try {
+        await registerCitizen({ name, email, contactNumber, password });
+        router.push("/dashboard");
+      } catch (err) {
+        setError(friendlyAuthError(err));
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
+
+    // Demo mode (Firebase not configured): simulate an account existing in
+    // this browser only, so Sign In can check against it.
     window.localStorage.setItem("tracenet_demo_account", "true");
     router.push("/dashboard");
   }
@@ -30,13 +61,26 @@ export default function SignUpPage() {
 
         <form className="bg-white border border-line rounded-lg shadow-card p-8">
           <Field label="Full name">
-            <Input placeholder="Juan dela Cruz" />
+            <Input
+              placeholder="Juan dela Cruz"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </Field>
           <Field label="Email address">
-            <Input type="email" placeholder="juan@example.com" />
+            <Input
+              type="email"
+              placeholder="juan@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Field>
           <Field label="Contact number">
-            <Input placeholder="09XX-XXX-XXXX" />
+            <Input
+              placeholder="09XX-XXX-XXXX"
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
+            />
           </Field>
           <Field label="Barangay of residence">
             <BarangaySelect />
@@ -47,11 +91,28 @@ export default function SignUpPage() {
             </Select>
           </Field>
           <Field label="Password">
-            <Input type="password" placeholder="••••••••••" />
+            <Input
+              type="password"
+              placeholder="••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Field>
 
-          <Button type="button" onClick={handleCreateAccount} variant="primary" className="w-full mt-2">
-            Create account
+          {error && (
+            <div className="bg-red-50 border border-[#F3C6C6] text-danger text-xs font-semibold rounded-md px-3.5 py-2.5 mb-2">
+              {error}
+            </div>
+          )}
+
+          <Button
+            type="button"
+            onClick={handleCreateAccount}
+            variant="primary"
+            className="w-full mt-2"
+            disabled={submitting}
+          >
+            {submitting ? "Creating account…" : "Create account"}
           </Button>
 
           <p className="text-center text-xs text-ink-400 mt-5 leading-relaxed">
