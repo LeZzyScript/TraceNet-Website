@@ -7,6 +7,7 @@ import DashboardShell from "@/components/DashboardShell";
 import { Card, SectionLabel } from "@/components/ui/Card";
 import { Field, Input, Textarea, Select, FileUpload } from "@/components/ui/Input";
 import BarangaySelect from "@/components/ui/BarangaySelect";
+import LocationPinPicker from "@/components/ui/LocationPinPicker";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/components/AuthProvider";
 import { isFirebaseConfigured } from "@/lib/firebase";
@@ -22,6 +23,8 @@ const DEMO_FORM = {
   age: "34",
   gender: "Female",
   lastSeenLocation: "Brgy. Labangon, Cebu City",
+  latitude: 10.308,
+  longitude: 123.875,
   clothingDescription: "White blouse, blue jeans, wearing eyeglasses",
   dateMissing: "2026-06-28",
   timeMissing: "09:00",
@@ -38,6 +41,8 @@ const EMPTY_FORM = {
   age: "",
   gender: "Female",
   lastSeenLocation: "",
+  latitude: 10.308,
+  longitude: 123.875,
   clothingDescription: "",
   dateMissing: "",
   timeMissing: "",
@@ -45,7 +50,7 @@ const EMPTY_FORM = {
   reporterName: "",
   relationship: "",
   contactNumber: "",
-  barangay: "",
+  barangay: "Labangon",
 };
 
 export default function ReportMissingPage() {
@@ -91,6 +96,8 @@ export default function ReportMissingPage() {
             age: formData.age,
             sex: formData.gender,
             location: formData.lastSeenLocation,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
             description: formData.clothingDescription,
             photoUrl,
             reporterName: formData.reporterName,
@@ -217,6 +224,23 @@ export default function ReportMissingPage() {
                 required
               />
             </Field>
+
+            <div className="mb-4">
+              <LocationPinPicker
+                latitude={formData.latitude}
+                longitude={formData.longitude}
+                barangay={formData.barangay}
+                onSelectLocation={({ latitude, longitude, barangay, locationText }) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    latitude,
+                    longitude,
+                    barangay: barangay || prev.barangay,
+                    lastSeenLocation: prev.lastSeenLocation || locationText,
+                  }))
+                }
+              />
+            </div>
 
             <Field label="Clothing description">
               <Textarea

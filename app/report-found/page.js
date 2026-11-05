@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import DashboardShell from "@/components/DashboardShell";
 import { Card } from "@/components/ui/Card";
 import { Field, Input, Textarea, Select, FileUpload } from "@/components/ui/Input";
+import LocationPinPicker from "@/components/ui/LocationPinPicker";
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/components/AuthProvider";
 import { isFirebaseConfigured } from "@/lib/firebase";
@@ -23,6 +24,9 @@ export default function ReportFoundPage() {
     age: "",
     sex: "Female",
     location: "Brgy. Mabolo, Cebu City",
+    barangay: "Mabolo",
+    latitude: 10.321,
+    longitude: 123.921,
     description: "",
     shelteredAt: "Brgy. Mabolo hall",
   });
@@ -68,6 +72,9 @@ export default function ReportFoundPage() {
           age: formData.age,
           sex: formData.sex,
           location: formData.location.trim(),
+          barangay: formData.barangay,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
           description: fullDesc || "Found person sighting reported via web portal",
           photoUrl,
         },
@@ -150,6 +157,21 @@ export default function ReportFoundPage() {
                 required
               />
             </Field>
+
+            <LocationPinPicker
+              latitude={formData.latitude}
+              longitude={formData.longitude}
+              barangay={formData.barangay}
+              onSelectLocation={({ latitude, longitude, barangay, locationText }) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  latitude,
+                  longitude,
+                  barangay: barangay || prev.barangay,
+                  location: locationText,
+                }))
+              }
+            />
 
             <Field label="Current condition / clothing / notes">
               <Textarea

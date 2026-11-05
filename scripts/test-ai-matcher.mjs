@@ -97,5 +97,12 @@ const ranked = rankCandidatesForReport(mariaMissing, [
 assert.equal(ranked.length, 2, "Incompatible male candidate should be filtered out (<55%)");
 assert.equal(ranked[0].sightingReportId, "s-101");
 
-console.log("✓ All Phase 2 (80/20 AI Matcher & FISWG Rubric) tests passed!");
+// 7. Phase 3 Geo & Hotspot checks
+import { filterNearbyCases, computeHotspots } from "../lib/geo.js";
+const nearby = filterNearbyCases(10.308, 123.875, [mariaMissing, maboloSighting, cebuanoSighting], 2);
+assert.equal(nearby.length, 2, "Only Labangon (0km) and Tisa (0.9km) are within 2km of Labangon");
+const hotspots = computeHotspots([mariaMissing, maboloSighting, cebuanoSighting]);
+assert.equal(hotspots.length, 3, "Three distinct barangays should produce 3 hotspot entries");
+
+console.log("✓ All Phase 2 & Phase 3 unit tests passed!");
 
