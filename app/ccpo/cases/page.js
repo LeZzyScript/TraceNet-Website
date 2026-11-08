@@ -5,8 +5,16 @@ import Link from "next/link";
 import CCPOShell from "@/components/CCPOShell";
 import DataModeBanner from "@/components/DataModeBanner";
 import { useLiveCases } from "@/lib/useLiveCases";
-import { resolveReport } from "@/lib/liveData";
+import { resolveReport, updateReportDetails } from "@/lib/liveData";
 import { toCcpoRow } from "@/lib/reportMapper";
+
+const CCPO_OFFICERS = [
+  "P/Capt. R. Dizon (Station 10)",
+  "P/Lt. M. Aquino (Station 4)",
+  "P/SSgt. J. Villanueva (Station 2)",
+  "P/Cpl. A. Mendoza (Station 9)",
+  "P/MSgt. E. Bautista (WCPD)",
+];
 
 // Demo rows: manuscript Figure 25 (p. 88). Used only when no CCPO account is signed in.
 const demoCases = [
@@ -119,8 +127,60 @@ export default function CCPOCasesPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
+  const [editOfficer, setEditOfficer] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [toast, setToast] = useState("");
   const [showBlotter, setShowBlotter] = useState(false);
   const [actionError, setActionError] = useState("");
+
+  function openCaseModal(c) {
+    setSelectedCase(c);
+    setEditOfficer(c.officer || CCPO_OFFICERS[0]);
+    setEditNotes(c.notes || "");
+    setShowBlotter(false);
+  }
+
+  function showToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(""), 3500);
+  }
+
+  async function handleSaveCaseUpdate(c) {
+    setActionError("");
+    if (live && c.docId) {
+      try {
+        await updateReportDetails(
+          c.docId,
+          {
+            assignedOfficer: editOfficer,
+            description: editNotes,
+          },
+          { uid: user?.uid, name: user?.displayName || user?.email }
+        );
+      } catch {
+        setActionError("Could not save officer/notes update.");
+        return;
+      }
+    } else {
+      setDemoRows((prev) =>
+        prev.map((row) =>
+          row.id === c.id
+            ? { ...row, officer: editOfficer, notes: editNotes }
+            : row
+        )
+      );
+    }
+    setSelectedCase((prev) =>
+      prev ? { ...prev, officer: editOfficer, notes: editNotes } : null
+    );
+    showToast(`Updated Officer (${editOfficer}) & Investigation Notes for ${c.id}.`);
+  }
+
+  function handleBroadcastAlert(c) {
+    showToast(
+      `📢 Inter-Agency Alert broadcast for ${c.name} (${c.id}) to 11 CCPO Stations & 80 Barangays!`
+    );
+  }
 
   const cases = useMemo(
     () =>
@@ -191,6 +251,11 @@ export default function CCPOCasesPage() {
 
   return (
     <CCPOShell title="Case Management">
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 bg-[#0B2240] text-white text-xs font-bold px-4 py-3 rounded-xl shadow-lg border border-[#1967D2]">
+          ✓ {toast}
+        </div>
+      )}
       <DataModeBanner
         live={live}
         loading={loading}
@@ -299,7 +364,7 @@ export default function CCPOCasesPage() {
                   <td className="py-3.5 px-5 text-right">
                     <button
                       type="button"
-                      onClick={() => setSelectedCase(c)}
+                      onClick={() => openCaseModal(c)}
                       className="text-xs font-bold text-[#1967D2] bg-blue-50 hover:bg-[#1967D2] hover:text-white border border-blue-200/80 px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
                       View →
@@ -367,10 +432,49 @@ export default function CCPOCasesPage() {
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1.5">Investigation Notes</label>
-                  <p className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-slate-700 leading-relaxed">
-                    {selectedCase.notes}
-                  </p>
+                  <label className="font-bold text-slate-700 block mb-1.5">
+                    Assigned Investigating Officer (Fig 5.1 / IT-P1)
+                  </label>
+                  <select
+                    value={editOfficer}
+                    onChange={(e) => setEditOfficer(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-[#0B2240]"
+                  >
+                    {CCPO_OFFICERS.map((off) => (
+                      <option key={off} value={off}>
+                        {off}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-700 block mb-1.5">
+                    Investigation Notes &amp; Field Log
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    className="w-full p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-slate-700 leading-relaxed focus:outline-none focus:border-[#1967D2]"
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveCaseUpdate(selectedCase)}
+                    className="px-3.5 py-2 rounded-xl bg-[#0B2240] text-white font-bold hover:bg-[#16355D] cursor-pointer"
+                  >
+                    💾 Save Officer &amp; Notes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleBroadcastAlert(selectedCase)}
+                    className="px-3.5 py-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 font-bold hover:bg-amber-100 cursor-pointer"
+                  >
+                    📢 Broadcast Inter-Agency Alert
+                  </button>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100">

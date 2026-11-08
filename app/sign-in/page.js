@@ -75,7 +75,9 @@ export default function SignInPage() {
             />
           </Field>
           <div className="text-right -mt-2 mb-5">
-            <span className="link-inline text-xs">Forgot password?</span>
+            <Link href="/forgot-password" className="link-inline text-xs">
+              Forgot password?
+            </Link>
           </div>
 
           {error && (

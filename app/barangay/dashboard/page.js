@@ -133,6 +133,24 @@ export default function BarangayDashboardPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementBody, setAnnouncementBody] = useState("");
+  const [announcements, setAnnouncements] = useState([
+    {
+      id: "ann-1",
+      title: "Bantay Barangay Missing Person Advisory — Case #2038",
+      body: "Residents near Labangon Public Market and Tres de Abril St. are requested to report any sighting of Maria Santos (34, Female, wearing white blouse & blue jeans).",
+      time: "Today, 11:15 AM · Broadcast to 5 km radius",
+      priority: "High Priority",
+    },
+    {
+      id: "ann-2",
+      title: "Senior Citizen & Minor Curfew / Escort Coordination",
+      body: "Barangay Tanod patrols are stationed at Sitio Katangkungan and Katipunan St. from 6:00 PM to 6:00 AM for immediate missing-person desk verification.",
+      time: "Yesterday · Community Safety Bulletin",
+      priority: "Bulletin",
+    },
+  ]);
 
   const actor = user
     ? { uid: user.uid, name: user.displayName || user.email }
@@ -352,6 +370,16 @@ export default function BarangayDashboardPage() {
             }`}
           >
             3. Confirm AI Match (Fig 30.4)
+          </button>
+          <button
+            onClick={() => setActiveView("announcements")}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all ${
+              activeView === "announcements"
+                ? "bg-[#0B2240] text-white shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
+            }`}
+          >
+            4. Community Announcements (Fig 4.1)
           </button>
         </div>
       </div>
@@ -790,6 +818,96 @@ export default function BarangayDashboardPage() {
                 {live && selectedReport.matchId ? "Send for Manual Review" : "Dismiss Alert"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 4: WORKFLOW FIGURE 4.1 — BARANGAY COMMUNITY ANNOUNCEMENTS */}
+      {activeView === "announcements" && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
+            <h2 className="font-head font-extrabold text-base text-[#0B2240] mb-1">
+              Publish Barangay Advisory (Fig 4.1)
+            </h2>
+            <p className="text-xs text-slate-500 mb-4">
+              Broadcast missing-person alerts and community safety announcements to residents in Brgy. Labangon and neighboring Cebu City barangays.
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!announcementTitle.trim() || !announcementBody.trim()) return;
+                setAnnouncements((prev) => [
+                  {
+                    id: `ann-${Date.now()}`,
+                    title: announcementTitle.trim(),
+                    body: announcementBody.trim(),
+                    time: "Just now · Broadcast to Brgy. Labangon & 5 km radius",
+                    priority: "High Priority",
+                  },
+                  ...prev,
+                ]);
+                setAnnouncementTitle("");
+                setAnnouncementBody("");
+                showNotification(
+                  "Community advisory published and broadcast to nearby citizens!"
+                );
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Advisory Headline
+                </label>
+                <input
+                  type="text"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                  placeholder="e.g. Urgent Sighting Request — Brgy. Labangon Public Market"
+                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#1967D2]"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Advisory Details &amp; Contact Instructions
+                </label>
+                <textarea
+                  rows={4}
+                  value={announcementBody}
+                  onChange={(e) => setAnnouncementBody(e.target.value)}
+                  placeholder="Provide last seen location, clothing description, and Barangay Desk hotline..."
+                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs focus:outline-none focus:border-[#1967D2]"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl bg-[#1967D2] hover:bg-[#1454B0] text-white font-bold text-xs shadow-xs cursor-pointer transition-colors"
+              >
+                📢 Broadcast Community Announcement
+              </button>
+            </form>
+          </div>
+
+          <div className="space-y-3">
+            <div className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+              Active Barangay Advisories ({announcements.length})
+            </div>
+            {announcements.map((a) => (
+              <div
+                key={a.id}
+                className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-2"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-blue-50 text-[#1967D2]">
+                    {a.priority}
+                  </span>
+                  <span className="text-[11px] text-slate-400">{a.time}</span>
+                </div>
+                <div className="font-bold text-sm text-[#0B2240]">{a.title}</div>
+                <p className="text-xs text-slate-600 leading-relaxed">{a.body}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}
