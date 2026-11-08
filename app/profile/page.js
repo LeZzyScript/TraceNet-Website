@@ -64,7 +64,7 @@ export default function CitizenProfilePage() {
 
   return (
     <DashboardShell>
-      <div className="max-w-3xl space-y-6">
+      <div className="max-w-4xl mx-auto space-y-6">
         <div>
           <h1 className="font-head font-extrabold text-2xl text-navy-900">
             My Profile &amp; Safety Center

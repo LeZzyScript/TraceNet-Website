@@ -143,7 +143,7 @@ export default function ReportMissingPage() {
 
   return (
     <DashboardShell>
-      <div className="max-w-xl">
+      <div className="max-w-2xl mx-auto">
         <h1 className="font-head font-extrabold text-2xl text-navy-900 mb-1">
           Report a missing person
         </h1>

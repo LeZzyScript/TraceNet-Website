@@ -162,7 +162,7 @@ export default function SightingsMapPage() {
 
   return (
     <DashboardShell>
-      <div className="max-w-5xl">
+      <div className="max-w-5xl mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div>
             <h1 className="font-head font-extrabold text-2xl text-navy-900">

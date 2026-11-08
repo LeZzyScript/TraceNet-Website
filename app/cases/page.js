@@ -83,54 +83,56 @@ export default function CasesPage() {
 
   return (
     <DashboardShell>
-      <h1 className="font-head font-extrabold text-2xl text-navy-900 mb-1">My cases</h1>
-      <p className="text-sm text-ink-500 mb-8">Everything you&rsquo;ve reported</p>
+      <div className="max-w-2xl mx-auto">
+        <h1 className="font-head font-extrabold text-2xl text-navy-900 mb-1">My cases</h1>
+        <p className="text-sm text-ink-500 mb-8">Everything you&rsquo;ve reported</p>
 
-      <div className="flex gap-2 mb-6 max-w-xl">
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => setFilter(t.key)}
-            className={`flex-1 text-center py-2.5 rounded-md text-xs font-extrabold border transition-colors ${
-              filter === t.key
-                ? "bg-brand-600 text-white border-brand-600"
-                : "bg-paper text-ink-700 border-line hover:bg-slate-50"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+        <div className="flex gap-2 mb-6">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setFilter(t.key)}
+              className={`flex-1 text-center py-2.5 rounded-md text-xs font-extrabold border transition-colors ${
+                filter === t.key
+                  ? "bg-brand-600 text-white border-brand-600"
+                  : "bg-paper text-ink-700 border-line hover:bg-slate-50"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="max-w-xl space-y-3">
-        {visibleCases.map((c) => {
-          const card = (
-            <Card className={`p-4 ${c.href ? "hover:shadow-lg transition-shadow" : ""}`}>
-              <div className="flex justify-between items-start gap-3">
-                <div>
-                  <div className="font-bold text-sm text-navy-900">{c.name}</div>
-                  <div className="text-xs text-ink-400">
-                    Case {c.id} · {c.typeLabel || "Missing"}
+        <div className="space-y-3">
+          {visibleCases.map((c) => {
+            const card = (
+              <Card className={`p-4 ${c.href ? "hover:shadow-lg transition-shadow" : ""}`}>
+                <div className="flex justify-between items-start gap-3">
+                  <div>
+                    <div className="font-bold text-sm text-navy-900">{c.name}</div>
+                    <div className="text-xs text-ink-400">
+                      Case {c.id} · {c.typeLabel || "Missing"}
+                    </div>
                   </div>
+                  <span className={`text-[10px] font-extrabold rounded-full px-2.5 py-1 whitespace-nowrap ${c.badge.className}`}>
+                    {c.badge.label}
+                  </span>
                 </div>
-                <span className={`text-[10px] font-extrabold rounded-full px-2.5 py-1 whitespace-nowrap ${c.badge.className}`}>
-                  {c.badge.label}
-                </span>
-              </div>
-              <div className="text-xs text-ink-700 mt-3 pt-3 border-t border-dashed border-line">
-                {c.note}
-              </div>
-            </Card>
-          );
-          return c.href ? (
-            <Link key={c.id} href={c.href} className="block">
-              {card}
-            </Link>
-          ) : (
-            <div key={c.id}>{card}</div>
-          );
-        })}
+                <div className="text-xs text-ink-700 mt-3 pt-3 border-t border-dashed border-line">
+                  {c.note}
+                </div>
+              </Card>
+            );
+            return c.href ? (
+              <Link key={c.id} href={c.href} className="block">
+                {card}
+              </Link>
+            ) : (
+              <div key={c.id}>{card}</div>
+            );
+          })}
+        </div>
       </div>
     </DashboardShell>
   );

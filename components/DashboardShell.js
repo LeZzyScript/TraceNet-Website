@@ -132,40 +132,44 @@ export default function DashboardShell({ children }) {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-[72px] flex items-center justify-between px-5 md:px-10 border-b border-line bg-white sticky top-0 z-10">
-          <div className="flex items-center gap-2.5 md:hidden">
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className="w-9 h-9 rounded-md border border-line flex items-center justify-center text-navy-900 font-bold"
-              aria-label="Open menu"
-            >
-              ☰
-            </button>
-            <Image src="/logo-icon.png" alt="TraceNet" width={28} height={28} className="rounded-[8px]" />
-            <span className="font-head font-extrabold text-navy-900">TraceNet</span>
-          </div>
-          <div className="hidden md:block font-head font-bold text-navy-900">
-            Welcome back, {firstName}
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="hidden sm:inline-flex text-xs font-semibold text-ink-500 hover:text-ink-900 cursor-pointer"
-            >
-              Log out
-            </button>
-            <Link
-              href="/profile"
-              className="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm hover:ring-2 hover:ring-brand-600/30 transition-all"
-              title="My Profile"
-            >
-              👤
-            </Link>
+        <header className="h-[72px] px-5 md:px-10 border-b border-line bg-white sticky top-0 z-10 flex items-center">
+          <div className="w-full max-w-5xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2.5 md:hidden">
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="w-9 h-9 rounded-md border border-line flex items-center justify-center text-navy-900 font-bold"
+                aria-label="Open menu"
+              >
+                ☰
+              </button>
+              <Image src="/logo-icon.png" alt="TraceNet" width={28} height={28} className="rounded-[8px]" />
+              <span className="font-head font-extrabold text-navy-900">TraceNet</span>
+            </div>
+            <div className="hidden md:block font-head font-bold text-navy-900">
+              Welcome back, {firstName}
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="hidden sm:inline-flex text-xs font-semibold text-ink-500 hover:text-ink-900 cursor-pointer"
+              >
+                Log out
+              </button>
+              <Link
+                href="/profile"
+                className="w-9 h-9 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm hover:ring-2 hover:ring-brand-600/30 transition-all"
+                title="My Profile"
+              >
+                👤
+              </Link>
+            </div>
           </div>
         </header>
-        <main className="flex-1 px-5 md:px-10 py-8">{children}</main>
+        <main className="flex-1 px-4 sm:px-6 md:px-10 py-6 md:py-8">
+          <div className="w-full max-w-5xl mx-auto">{children}</div>
+        </main>
       </div>
 
       {/* Fixed Mobile Bottom Navigation Bar */}

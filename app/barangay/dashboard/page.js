@@ -572,7 +572,7 @@ export default function BarangayDashboardPage() {
       {/* VIEW 2: FIGURE 30.3 (p. 93) — VERIFY REPORT */}
       {activeView === "verify" && !selectedReport && emptyState}
       {activeView === "verify" && selectedReport && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 max-w-2xl shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 max-w-2xl mx-auto shadow-sm">
           <div className="flex flex-col sm:flex-row gap-6 mb-6">
             <div className="w-28 h-32 rounded-2xl bg-blue-50 border border-blue-200 flex flex-col items-center justify-center shrink-0 mx-auto sm:mx-0 overflow-hidden">
               {selectedReport.photoUrl ? (
@@ -648,7 +648,7 @@ export default function BarangayDashboardPage() {
       {/* VIEW 3: FIGURE 30.4 (p. 93) — CONFIRM AI MATCH */}
       {activeView === "confirm-match" && !selectedReport && emptyState}
       {activeView === "confirm-match" && selectedReport && (
-        <div className="max-w-2xl space-y-4">
+        <div className="max-w-2xl mx-auto space-y-4">
           {live && !selectedReport.matchId && (
             <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-800 flex flex-wrap items-center justify-between gap-2">
               <span>
