@@ -19,11 +19,6 @@ export const CEBU_CITY_BARANGAYS = [
   "Taptap", "Tejero", "Tinago", "Tisa", "To-ong Pardo", "Zapatera",
 ];
 
-/**
- * Type-to-filter barangay picker. No GPS/location detection is assumed
- * (citizens may be on a desktop browser) — they type a few letters and
- * pick from matching Cebu City barangays, or type the full name directly.
- */
 export default function BarangaySelect({
   defaultValue = "",
   placeholder = "Start typing a barangay...",

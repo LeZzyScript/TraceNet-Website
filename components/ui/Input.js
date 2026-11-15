@@ -28,11 +28,6 @@ export function Select({ children, ...props }) {
   );
 }
 
-/**
- * File upload — replaces the mobile app's camera capture. Citizens on web
- * can only attach an existing photo (from their device or a photo they
- * already took), not capture live from a webcam.
- */
 export function FileUpload({ label = "Upload photo", hint, onChange, fileName }) {
   return (
     <label className="flex flex-col items-center justify-center gap-2 w-full border-[1.6px] border-dashed border-[#B9C8E6] bg-[#EDF3FC] rounded-md py-8 px-4 cursor-pointer text-center hover:bg-[#E4EDFB] transition-colors">

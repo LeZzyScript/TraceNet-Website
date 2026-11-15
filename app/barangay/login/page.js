@@ -8,7 +8,6 @@ import { friendlyAuthError, signInForPortal } from "@/lib/auth";
 
 export default function BarangayLoginPage() {
   const router = useRouter();
-  // Figure 30.1 sample values are only prefilled in demo mode.
   const [email, setEmail] = useState(
     isFirebaseConfigured ? "" : "Barangay Official — brgy.lahug@cebu.gov.ph"
   );
@@ -37,7 +36,6 @@ export default function BarangayLoginPage() {
   return (
     <div className="min-h-screen bg-[#EEF2F7] flex items-center justify-center p-4">
       <div className="w-full max-w-[380px] bg-white rounded-xl shadow-xl overflow-hidden border border-[#E2E8F0]">
-        {/* Header block matching Figure 30.1 (Barangay Official Login) */}
         <div className="pt-8 pb-5 px-8 text-center">
           <div className="w-12 h-12 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] mx-auto mb-3 flex items-center justify-center">
             <svg className="w-6 h-6 text-[#1967D2]" viewBox="0 0 24 24" fill="currentColor">
@@ -52,7 +50,6 @@ export default function BarangayLoginPage() {
           </p>
         </div>
 
-        {/* Form body */}
         <form onSubmit={handleLogin} className="px-7 pb-7 space-y-4">
           <div>
             <label className="block text-[11px] font-bold text-[#334155] mb-1.5">

@@ -11,79 +11,6 @@ import {
   getBarangayCoords,
 } from "@/lib/geo";
 
-const DEMO_MAP_REPORTS = [
-  {
-    id: "demo-2038",
-    caseCode: "#2038",
-    type: "missing",
-    name: "Maria Santos",
-    age: 34,
-    sex: "Female",
-    barangay: "Labangon",
-    location: "Brgy. Labangon Public Market, Cebu City",
-    latitude: 10.308,
-    longitude: 123.875,
-    description: "White blouse, blue jeans, wearing eyeglasses",
-    status: "verified",
-  },
-  {
-    id: "demo-s101",
-    caseCode: "#S101",
-    type: "sighting",
-    name: "Unidentified Female (Sighting)",
-    age: 34,
-    sex: "Female",
-    barangay: "Mabolo",
-    location: "Brgy. Mabolo Hall, Cebu City",
-    latitude: 10.321,
-    longitude: 123.921,
-    description: "Disoriented, wearing white blouse, blue jeans, eyeglasses",
-    status: "submitted",
-  },
-  {
-    id: "demo-2041",
-    caseCode: "#2041",
-    type: "missing",
-    name: "Liza Tan",
-    age: 16,
-    sex: "Female",
-    barangay: "Lahug",
-    location: "Near JY Square Mall, Brgy. Lahug",
-    latitude: 10.334,
-    longitude: 123.898,
-    description: "Wearing school uniform, carrying black backpack",
-    status: "submitted",
-  },
-  {
-    id: "demo-2039",
-    caseCode: "#2039",
-    type: "missing",
-    name: "Carlos Reyes",
-    age: 67,
-    sex: "Male",
-    barangay: "Guadalupe",
-    location: "Guadalupe Church Plaza, Cebu City",
-    latitude: 10.3235,
-    longitude: 123.8789,
-    description: "Gray polo shirt, brown slippers, elderly with cane",
-    status: "forwarded",
-  },
-  {
-    id: "demo-2037",
-    caseCode: "#2037",
-    type: "missing",
-    name: "Ana Lim",
-    age: 9,
-    sex: "Female",
-    barangay: "Pardo",
-    location: "Brgy. Pardo Elementary School",
-    latitude: 10.289,
-    longitude: 123.856,
-    description: "Pink t-shirt, denim shorts",
-    status: "verified",
-  },
-];
-
 const RADIUS_OPTIONS = [
   { label: "1 km", value: 1 },
   { label: "3 km", value: 3 },
@@ -127,7 +54,7 @@ export default function SightingsMapPage() {
 
   const sourceReports = useMemo(() => {
     if (live && allReports.length > 0) return allReports;
-    return DEMO_MAP_REPORTS;
+    return [];
   }, [live, allReports]);
 
   const nearbyCases = useMemo(() => {
@@ -189,7 +116,6 @@ export default function SightingsMapPage() {
           </div>
         </div>
 
-        {/* Filter Controls Bar */}
         <Card className="p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-navy-900">Reference Barangay:</span>
@@ -250,7 +176,6 @@ export default function SightingsMapPage() {
         </Card>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Interactive OpenStreetMap + Pin Layer */}
           <div className="lg:col-span-2 relative rounded-xl overflow-hidden border border-line bg-[#E4ECF5] min-h-[420px] shadow-xs">
             <iframe
               title="Cebu City Sightings OpenStreetMap"
@@ -258,7 +183,6 @@ export default function SightingsMapPage() {
               className="absolute inset-0 w-full h-full opacity-90 pointer-events-none"
             />
 
-            {/* Top Overlay Badge */}
             <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs border border-line rounded-lg px-3 py-2 shadow-xs z-10">
               <div className="text-xs font-extrabold text-navy-900">
                 📍 Centered: {customCenter ? customCenter.name : `Brgy. ${centerBarangay}`}
@@ -269,7 +193,6 @@ export default function SightingsMapPage() {
               </div>
             </div>
 
-            {/* Pinned Case Markers */}
             {nearbyCases.map((c) => {
               const pos = latLngToPercent(c.latitude, c.longitude);
               const isSighting = c.type === "sighting";
@@ -297,7 +220,6 @@ export default function SightingsMapPage() {
               );
             })}
 
-            {/* Selected Pin Floating Detail Card */}
             {activePin && (
               <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:max-w-xs bg-white/95 backdrop-blur-md border border-line rounded-xl p-3.5 shadow-lg z-20 text-xs">
                 <div className="flex items-center justify-between gap-2 mb-1">
@@ -337,7 +259,6 @@ export default function SightingsMapPage() {
             )}
           </div>
 
-          {/* Nearby Cases Distance List */}
           <div className="space-y-3">
             <div className="text-xs font-extrabold uppercase tracking-wider text-ink-500">
               Nearby Cases ({nearbyCases.length})

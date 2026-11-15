@@ -27,7 +27,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* decorative node-graph, echoes the logo mark */}
       <svg
         className="absolute -right-24 top-1/2 -translate-y-1/2 w-[560px] h-[560px] opacity-[0.18] pointer-events-none hidden lg:block"
         viewBox="0 0 400 400"

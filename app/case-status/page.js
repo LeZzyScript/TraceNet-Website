@@ -2,6 +2,7 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import DashboardShell from "@/components/DashboardShell";
 import { Card } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -12,14 +13,6 @@ import {
   forwardReport,
   updateReportDetails,
 } from "@/lib/liveData";
-
-const DEMO_STAGES = [
-  { title: "Report submitted", meta: "June 28, 9:14 AM", state: "done" },
-  { title: "Verified by barangay", meta: "Brgy. Labangon — June 28, 11:02 AM", state: "done" },
-  { title: "AI matching in progress", meta: "Scanning against 48 found reports", state: "active" },
-  { title: "Forwarded to CCPO", meta: "Pending", state: "pending" },
-  { title: "Case resolved", meta: "Pending", state: "pending" },
-];
 
 const CANCEL_REASONS = [
   "Missing person returned home safely",
@@ -85,22 +78,12 @@ function CaseStatusInner() {
   const { live, reports, bestByReport } = useLiveCases();
 
   const liveReport = useMemo(() => {
-    if (!live || !reportId) return null;
-    return reports.find((r) => r.id === reportId) || null;
+    if (!live) return null;
+    if (reportId) return reports.find((r) => r.id === reportId) || null;
+    return reports[0] || null;
   }, [live, reportId, reports]);
 
   const liveMatch = liveReport ? bestByReport.get(liveReport.id) : null;
-
-  // Demo overrides so Edit, Cancel, and Escalate work interactively in demo mode too
-  const [demoEscalated, setDemoEscalated] = useState(false);
-  const [demoWithdrawnReason, setDemoWithdrawnReason] = useState("");
-  const [demoDetails, setDemoDetails] = useState({
-    name: "Maria Santos, 34, Female",
-    location: "Brgy. Labangon",
-    description: "White blouse, blue jeans, wearing eyeglasses",
-    reporter: "Juan dela Cruz",
-    assigned: "Brgy. Labangon + CCPO",
-  });
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -116,58 +99,45 @@ function CaseStatusInner() {
   }
 
   const stages = useMemo(() => {
-    if (liveReport) return buildLiveStages(liveReport, liveMatch);
-    if (demoWithdrawnReason) {
-      return DEMO_STAGES.map((s) => ({
-        ...s,
-        state: "done",
-        meta: s.title === "Case resolved" ? `Withdrawn: ${demoWithdrawnReason}` : s.meta,
-      }));
-    }
-    if (demoEscalated) {
-      return [
-        DEMO_STAGES[0],
-        DEMO_STAGES[1],
-        { ...DEMO_STAGES[2], state: "done" },
-        {
-          title: "Forwarded to CCPO",
-          meta: "Escalated directly to CCPO Station 10",
-          state: "active",
-        },
-        DEMO_STAGES[4],
-      ];
-    }
-    return DEMO_STAGES;
-  }, [liveReport, liveMatch, demoEscalated, demoWithdrawnReason]);
+    if (!liveReport) return [];
+    return buildLiveStages(liveReport, liveMatch);
+  }, [liveReport, liveMatch]);
 
-  const caseTitle = liveReport ? `Case ${liveReport.caseCode}` : "Case #2038";
-  const isResolved =
-    liveReport?.status === "resolved" || Boolean(demoWithdrawnReason);
+  if (!liveReport) {
+    return (
+      <div className="max-w-lg mx-auto">
+        <Card className="p-8 text-center space-y-3">
+          <h2 className="font-head font-extrabold text-xl text-navy-900">No Case Selected</h2>
+          <p className="text-sm text-ink-500">
+            Select a case from Cases or submit a new report to view its live progress timeline.
+          </p>
+          <div className="pt-2">
+            <Link href="/cases">
+              <Button variant="outline">View Cases</Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
-  const details = liveReport
-    ? [
-        [
-          "Name",
-          [liveReport.name, liveReport.age, liveReport.sex].filter(Boolean).join(", "),
-        ],
-        ["Last seen", liveReport.location],
-        ["Description", liveReport.description || "—"],
-        ["Reported by", liveReport.reportedByName],
-        ["Assigned to", `Brgy. ${liveReport.barangay} + CCPO`],
-      ]
-    : [
-        ["Name", demoDetails.name],
-        ["Last seen", demoDetails.location],
-        ["Description", demoDetails.description],
-        ["Reported by", demoDetails.reporter],
-        ["Assigned to", demoDetails.assigned],
-      ];
+  const caseTitle = `Case ${liveReport.caseCode}`;
+  const isResolved = liveReport.status === "resolved" || liveReport.status === "cancelled";
+
+  const details = [
+    [
+      "Name",
+      [liveReport.name, liveReport.age, liveReport.sex].filter(Boolean).join(", "),
+    ],
+    ["Last seen", liveReport.location],
+    ["Description", liveReport.description || "—"],
+    ["Reported by", liveReport.reportedByName],
+    ["Assigned to", `Brgy. ${liveReport.barangay} + CCPO`],
+  ];
 
   function openEdit() {
-    setEditLocation(liveReport ? liveReport.location : demoDetails.location);
-    setEditDescription(
-      liveReport ? liveReport.description : demoDetails.description
-    );
+    setEditLocation(liveReport.location || "");
+    setEditDescription(liveReport.description || "");
     setShowEditModal(true);
   }
 
@@ -175,7 +145,7 @@ function CaseStatusInner() {
     e.preventDefault();
     setBusy(true);
     try {
-      if (liveReport && user) {
+      if (user) {
         await updateReportDetails(
           liveReport.id,
           {
@@ -184,12 +154,6 @@ function CaseStatusInner() {
           },
           { uid: user.uid, name: user.displayName || user.email }
         );
-      } else {
-        setDemoDetails((d) => ({
-          ...d,
-          location: editLocation.trim() || d.location,
-          description: editDescription.trim() || d.description,
-        }));
       }
       setShowEditModal(false);
       notify("Report details updated and synced with AI matching engine.");
@@ -202,13 +166,11 @@ function CaseStatusInner() {
     e.preventDefault();
     setBusy(true);
     try {
-      if (liveReport && user) {
+      if (user) {
         await cancelReportWithReason(liveReport.id, cancelReason, {
           uid: user.uid,
           name: user.displayName || user.email,
         });
-      } else {
-        setDemoWithdrawnReason(cancelReason);
       }
       setShowCancelModal(false);
       notify(`Report closed (${cancelReason}). Authorities notified.`);
@@ -220,13 +182,11 @@ function CaseStatusInner() {
   async function handleEscalate() {
     setBusy(true);
     try {
-      if (liveReport && user) {
+      if (user) {
         await forwardReport(liveReport.id, {
           uid: user.uid,
           name: user.displayName || user.email,
         });
-      } else {
-        setDemoEscalated(true);
       }
       notify("Case escalated directly to Cebu City Police Office (CCPO) Command Center.");
     } finally {
@@ -245,9 +205,8 @@ function CaseStatusInner() {
       <div className="flex items-center justify-between mb-1">
         <h1 className="font-head font-extrabold text-2xl text-navy-900">{caseTitle}</h1>
         <span
-          className={`text-xs font-bold ${
-            isResolved ? "text-ink-500" : "text-success"
-          }`}
+          className={`text-xs font-bold ${isResolved ? "text-ink-500" : "text-success"
+            }`}
         >
           ● {isResolved ? "Resolved / Closed" : "Active"}
         </span>
@@ -271,9 +230,8 @@ function CaseStatusInner() {
             </div>
             <div>
               <div
-                className={`text-sm font-bold ${
-                  s.state === "pending" ? "text-ink-400" : "text-navy-900"
-                }`}
+                className={`text-sm font-bold ${s.state === "pending" ? "text-ink-400" : "text-navy-900"
+                  }`}
               >
                 {s.title}
               </div>
@@ -301,7 +259,6 @@ function CaseStatusInner() {
         </Button>
       )}
 
-      {/* Citizen Workflow Actions (Manuscript Fig 3.1 & IT-C5) */}
       {!isResolved && (
         <div className="space-y-2.5">
           <div className="grid grid-cols-2 gap-2.5">
@@ -335,7 +292,6 @@ function CaseStatusInner() {
         </div>
       )}
 
-      {/* Edit Report Modal (Fig 3.1 / IT-C5) */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-6 border border-line shadow-xl">
@@ -391,7 +347,6 @@ function CaseStatusInner() {
         </div>
       )}
 
-      {/* Cancel / Withdraw Report Modal (Fig 3.1) */}
       {showCancelModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-6 border border-line shadow-xl">

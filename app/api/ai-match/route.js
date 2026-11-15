@@ -41,7 +41,6 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    // Mode 1: 1-to-Many candidate scan ({ targetReport, candidateReports, minConfidence })
     if (body.targetReport && Array.isArray(body.candidateReports)) {
       const minConfidence = typeof body.minConfidence === "number" ? body.minConfidence : 55;
       const matches = rankCandidatesForReport(
@@ -56,7 +55,6 @@ export async function POST(request) {
       });
     }
 
-    // Mode 2: 1-to-1 pair evaluation ({ missingReport, sightingReport })
     const { missingReport, sightingReport } = body;
     if (!missingReport || !sightingReport) {
       return NextResponse.json(

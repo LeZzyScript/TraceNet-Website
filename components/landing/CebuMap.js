@@ -41,7 +41,6 @@ export default function CebuMap() {
           </div>
         </div>
 
-        {/* Stylized, illustrative map — not to scale / not GIS-accurate */}
         <div className="relative bg-white/5 border border-white/10 rounded-lg p-6">
           <svg viewBox="0 0 380 440" className="w-full h-auto">
             <path

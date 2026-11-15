@@ -3,7 +3,6 @@
 import { useState } from "react";
 import AdminShell from "@/components/AdminShell";
 
-// Exact 7 rows from Figure 28 (p. 91) of TraceNet Capstone II Manuscript FINAL.pdf
 const initialUsers = [
   { id: 1, initials: "JD", name: "Juan dela Cruz", email: "juan@email.com", role: "Citizen", status: "Active", joined: "Jun 15" },
   { id: 2, initials: "MR", name: "Ofcr. Maria Reyes", email: "m.reyes@ccpo.gov", role: "CCPO", status: "Active", joined: "Jun 10" },
@@ -14,7 +13,6 @@ const initialUsers = [
   { id: 7, initials: "UU", name: "Unverified User", email: "new@email.com", role: "Citizen", status: "Pending", joined: "Jun 29" },
 ];
 
-// Pending Official Approvals from Figure 33.3 (p. 98)
 const initialApprovals = [
   {
     id: "APP-01",
@@ -124,7 +122,6 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* Storyboard Screen Selector Bar (Figure 28 & Figure 33.1–33.6 p. 98) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-3 mb-6 flex flex-wrap items-center gap-1.5 shadow-xs">
         <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 px-2">
           Storyboard View:
@@ -151,10 +148,8 @@ export default function AdminUsersPage() {
         ))}
       </div>
 
-      {/* VIEW 1: FIGURE 28 (p. 91) — ADMIN PANEL — USER MANAGEMENT */}
       {activeView === "users" && (
         <>
-          {/* 4 Tinted Metric Cards matching Figure 28 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-5 shadow-xs">
               <div className="flex items-center justify-between mb-2">
@@ -209,7 +204,6 @@ export default function AdminUsersPage() {
             </div>
           </div>
 
-          {/* Filter Bar matching Figure 28 */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 mb-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-xs">
             <div className="flex flex-wrap items-center gap-2.5">
               <select
@@ -250,7 +244,6 @@ export default function AdminUsersPage() {
             </div>
           </div>
 
-          {/* User Table matching Figure 28 */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -330,7 +323,6 @@ export default function AdminUsersPage() {
         </>
       )}
 
-      {/* VIEW 2: FIGURE 33.2 (p. 98) — ADMIN COMMAND DASHBOARD */}
       {activeView === "dashboard" && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -384,7 +376,6 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* VIEW 3: FIGURE 33.3 (p. 98) — ACCOUNT APPROVALS */}
       {activeView === "approvals" && (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 space-y-5 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
@@ -448,7 +439,6 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* VIEW 4: FIGURE 33.6 (p. 98) — EDIT / SUSPEND ACCOUNT */}
       {activeView === "edit-account" && (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 max-w-xl space-y-5 shadow-xs">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
@@ -532,7 +522,6 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* VIEW 5: FIGURE 33.5 (p. 98) — REPORTS, ANALYTICS & SYSTEM SETTINGS */}
       {activeView === "settings" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl border border-slate-200/80 p-6 space-y-4 shadow-xs">
@@ -602,7 +591,6 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* VIEW 6: FIGURE 33.4 (p. 98) — ADMIN PROFILE MANAGEMENT */}
       {activeView === "profile" && (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 max-w-md space-y-5 shadow-xs">
           <div className="flex items-center gap-4 pb-4 border-b border-slate-100">

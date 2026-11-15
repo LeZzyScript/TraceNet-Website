@@ -1,9 +1,5 @@
 import Link from "next/link";
 
-/**
- * Tells the viewer whether they are looking at live Firestore data or the
- * built-in demo data, so demo numbers are never mistaken for real cases.
- */
 export default function DataModeBanner({
   live,
   loading,

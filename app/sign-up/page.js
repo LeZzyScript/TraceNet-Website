@@ -42,8 +42,6 @@ export default function SignUpPage() {
       return;
     }
 
-    // Demo mode (Firebase not configured): simulate an account existing in
-    // this browser only, so Sign In can check against it.
     window.localStorage.setItem("tracenet_demo_account", "true");
     router.push("/dashboard");
   }

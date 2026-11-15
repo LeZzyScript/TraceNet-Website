@@ -16,101 +16,6 @@ const CCPO_OFFICERS = [
   "P/MSgt. E. Bautista (WCPD)",
 ];
 
-// Demo rows: manuscript Figure 25 (p. 88). Used only when no CCPO account is signed in.
-const demoCases = [
-  {
-    id: "#2038",
-    initials: "MS",
-    name: "Maria Santos, 34",
-    barangay: "Labangon",
-    status: "● Match",
-    statusBadge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    score: "87%",
-    scoreNum: 87,
-    category: "active",
-    officer: "PO2 Juan dela Cruz",
-    notes: "AI Facial Match (88.5%) + NLP Text Match (81.0%) = 87% combined confidence with Found Report #5012 in Brgy. Mabolo.",
-  },
-  {
-    id: "#2041",
-    initials: "PR",
-    name: "Pedro Reyes, 72",
-    barangay: "Guadalupe",
-    status: "Escalated",
-    statusBadge: "bg-rose-50 text-rose-700 border border-rose-200",
-    score: "—",
-    scoreNum: 0,
-    category: "escalated",
-    officer: "SPO1 Marco Villamor",
-    notes: "Elderly person with dementia unresolved > 48 hrs. Escalated to District 3 Station.",
-  },
-  {
-    id: "#2042",
-    initials: "LT",
-    name: "Liza Tan, 16",
-    barangay: "Mabolo",
-    status: "New",
-    statusBadge: "bg-amber-50 text-amber-700 border border-amber-200",
-    score: "Pend.",
-    scoreNum: 0,
-    category: "active",
-    officer: "Unassigned",
-    notes: "Forwarded by Brgy. Mabolo desk officer. AI scan in progress.",
-  },
-  {
-    id: "#2039",
-    initials: "RC",
-    name: "Ramon Cruz, 45",
-    barangay: "Pardo",
-    status: "Active",
-    statusBadge: "bg-amber-50 text-amber-700 border border-amber-200",
-    score: "54%",
-    scoreNum: 54,
-    category: "active",
-    officer: "PO3 Elena Gomez",
-    notes: "Patrol unit dispatched near Pardo Public Market.",
-  },
-  {
-    id: "#2040",
-    initials: "AR",
-    name: "Ana Reyes, 8",
-    barangay: "Talamban",
-    status: "Active",
-    statusBadge: "bg-amber-50 text-amber-700 border border-amber-200",
-    score: "—",
-    scoreNum: 0,
-    category: "active",
-    officer: "PO2 Ryan Lim",
-    notes: "Coordinating with Talamban Barangay Hall.",
-  },
-  {
-    id: "#2036",
-    initials: "JB",
-    name: "Jose B., 38",
-    barangay: "Lahug",
-    status: "✓ Resolved",
-    statusBadge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    score: "91%",
-    scoreNum: 91,
-    category: "resolved",
-    officer: "PO2 Juan dela Cruz",
-    notes: "Confirmed match reunited with family. Temporary candidate photos purged per RA 10173.",
-  },
-  {
-    id: "#2035",
-    initials: "CF",
-    name: "Carmen F., 55",
-    barangay: "Guadalupe",
-    status: "✓ Resolved",
-    statusBadge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-    score: "—",
-    scoreNum: 0,
-    category: "resolved",
-    officer: "SPO1 Marco Villamor",
-    notes: "Located safely and verified by Brgy. Guadalupe.",
-  },
-];
-
 export default function CCPOCasesPage() {
   const {
     configured,
@@ -123,7 +28,6 @@ export default function CCPOCasesPage() {
     matchByReport,
   } = useLiveCases(["ccpo_officer", "admin"]);
 
-  const [demoRows, setDemoRows] = useState(demoCases);
   const [activeTab, setActiveTab] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] = useState(null);
@@ -147,28 +51,22 @@ export default function CCPOCasesPage() {
 
   async function handleSaveCaseUpdate(c) {
     setActionError("");
-    if (live && c.docId) {
-      try {
-        await updateReportDetails(
-          c.docId,
-          {
-            assignedOfficer: editOfficer,
-            description: editNotes,
-          },
-          { uid: user?.uid, name: user?.displayName || user?.email }
-        );
-      } catch {
-        setActionError("Could not save officer/notes update.");
-        return;
-      }
-    } else {
-      setDemoRows((prev) =>
-        prev.map((row) =>
-          row.id === c.id
-            ? { ...row, officer: editOfficer, notes: editNotes }
-            : row
-        )
+    if (!live || !c.docId) {
+      setActionError("Sign in with a CCPO account to update live cases.");
+      return;
+    }
+    try {
+      await updateReportDetails(
+        c.docId,
+        {
+          assignedOfficer: editOfficer,
+          description: editNotes,
+        },
+        { uid: user?.uid, name: user?.displayName || user?.email }
       );
+    } catch {
+      setActionError("Could not save officer/notes update.");
+      return;
     }
     setSelectedCase((prev) =>
       prev ? { ...prev, officer: editOfficer, notes: editNotes } : null
@@ -183,19 +81,16 @@ export default function CCPOCasesPage() {
   }
 
   const cases = useMemo(
-    () =>
-      live ? liveReports.map((r) => toCcpoRow(r, matchByReport.get(r.id))) : demoRows,
-    [live, liveReports, matchByReport, demoRows]
+    () => (live ? liveReports.map((r) => toCcpoRow(r, matchByReport.get(r.id))) : []),
+    [live, liveReports, matchByReport]
   );
 
-  const counts = live
-    ? {
-        active: cases.filter((c) => c.category === "active").length,
-        escalated: cases.filter((c) => c.category === "escalated").length,
-        resolved: cases.filter((c) => c.category === "resolved").length,
-      }
-    : { active: 45, escalated: 3, resolved: 7 };
-  const totalCases = live ? cases.length : 48;
+  const counts = {
+    active: cases.filter((c) => c.category === "active").length,
+    escalated: cases.filter((c) => c.category === "escalated").length,
+    resolved: cases.filter((c) => c.category === "resolved").length,
+  };
+  const totalCases = cases.length;
 
   const filtered = cases.filter((c) => {
     const matchesTab =
@@ -217,34 +112,22 @@ export default function CCPOCasesPage() {
 
   async function handleResolveCase(c) {
     setActionError("");
-    if (live) {
-      try {
-        await resolveReport(c.docId, {
-          uid: user?.uid,
-          name: user?.displayName || user?.email,
-        });
-      } catch (e) {
-        setActionError(
-          e?.code === "permission-denied"
-            ? "Action blocked: Firestore denied the write for this account."
-            : "Could not resolve the case. Please try again."
-        );
-        return;
-      }
-    } else {
-      setDemoRows((prev) =>
-        prev.map((row) =>
-          row.id === c.id
-            ? {
-                ...row,
-                status: "✓ Resolved",
-                statusBadge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-                category: "resolved",
-                notes: row.notes + " [Case Closed & Unmatched Candidate Photos Purged per RA 10173]",
-              }
-            : row
-        )
+    if (!live || !c.docId) {
+      setActionError("Sign in with a CCPO account to resolve live cases.");
+      return;
+    }
+    try {
+      await resolveReport(c.docId, {
+        uid: user?.uid,
+        name: user?.displayName || user?.email,
+      });
+    } catch (e) {
+      setActionError(
+        e?.code === "permission-denied"
+          ? "Action blocked: Firestore denied the write for this account."
+          : "Could not resolve the case. Please try again."
       );
+      return;
     }
     setSelectedCase(null);
   }
@@ -269,7 +152,6 @@ export default function CCPOCasesPage() {
           {actionError}
         </div>
       )}
-      {/* Segmented Filter Bar & Search (Figure 25 p. 88) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-3.5 mb-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex flex-wrap gap-1.5 bg-slate-100/80 p-1 rounded-xl">
           {[
@@ -306,7 +188,6 @@ export default function CCPOCasesPage() {
         </div>
       </div>
 
-      {/* Case Management Table with Dark Navy Header (Figure 25 p. 88) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -376,7 +257,6 @@ export default function CCPOCasesPage() {
           </table>
         </div>
 
-        {/* Pagination Footer (Figure 25 p. 88) */}
         <div className="px-5 py-3.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 bg-slate-50/40">
           <span>
             {filtered.length === 0
@@ -393,7 +273,6 @@ export default function CCPOCasesPage() {
         </div>
       </div>
 
-      {/* Case Record & Digital Blotter Modal */}
       {selectedCase && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">

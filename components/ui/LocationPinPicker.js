@@ -8,7 +8,6 @@ import {
   inferBarangay,
 } from "@/lib/geo";
 
-// Bounding box of urban Cebu City for interactive click-to-coord mapping
 const BOUNDS = {
   minLat: 10.265,
   maxLat: 10.375,
@@ -132,7 +131,6 @@ export default function LocationPinPicker({
         </div>
       )}
 
-      {/* Interactive Pin-Drop Canvas with OpenStreetMap background */}
       <div
         onClick={handleCanvasClick}
         role="button"
@@ -150,7 +148,6 @@ export default function LocationPinPicker({
           />
         )}
 
-        {/* Clickable Barangay Reference Dots */}
         {BARANGAY_CENTROIDS.slice(0, 12).map((b) => {
           const pos = latLngToPercent(b.latitude, b.longitude);
           return (
@@ -173,7 +170,6 @@ export default function LocationPinPicker({
           );
         })}
 
-        {/* Active Dropped Pin */}
         <div
           style={{ left: `${pinPos.x}%`, top: `${pinPos.y}%` }}
           className="absolute -translate-x-1/2 -translate-y-full z-20 pointer-events-none transition-all duration-150"
@@ -185,7 +181,6 @@ export default function LocationPinPicker({
         </div>
       </div>
 
-      {/* Quick Barangay Pin Chips */}
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="text-[10px] font-bold uppercase tracking-wider text-ink-400 mr-1">
           Quick Pin:

@@ -52,7 +52,6 @@ export default function CCPOHeatmapPage() {
   const hotspots = liveHotspots || hotspotsByPeriod[period];
 
   function handleExport() {
-    // Generate and download CSV report (Test ID: IT-P2)
     try {
       const rows = [
         ["Barangay", "Reported Cases", "Density Tier", "Period"],
@@ -73,7 +72,6 @@ export default function CCPOHeatmapPage() {
       link.click();
       document.body.removeChild(link);
     } catch {
-      // Fallback notification only
     }
     setExported(true);
     setTimeout(() => setExported(false), 3500);
@@ -95,7 +93,6 @@ export default function CCPOHeatmapPage() {
         </div>
       )}
 
-      {/* Top Filter Bar (Figure 26 p. 89) */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-3.5 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-slate-500 px-2">Period:</span>
@@ -135,9 +132,7 @@ export default function CCPOHeatmapPage() {
         </div>
       </div>
 
-      {/* Main Grid (Figure 26 p. 89) */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left 2 Columns: Tactical Cluster Heatmap Canvas of Cebu City */}
         <div className="lg:col-span-2 bg-[#E8EEF5] border border-slate-200/90 rounded-2xl p-5 relative min-h-[420px] sm:min-h-[460px] flex items-center justify-center overflow-hidden shadow-xs">
           {showOsmTiles && (
             <iframe
@@ -146,7 +141,6 @@ export default function CCPOHeatmapPage() {
               className="absolute inset-0 w-full h-full opacity-75 pointer-events-none"
             />
           )}
-          {/* Subtle Map Grid & Road Vectors */}
           <svg
             className="absolute inset-0 w-full h-full opacity-35 pointer-events-none"
              xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +151,6 @@ export default function CCPOHeatmapPage() {
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#gis-grid)" />
-            {/* Stylized Cebu City Highway & Coastal Vectors */}
             <path
               d="M 40 380 Q 220 260 360 180 T 680 60"
               fill="none"
@@ -173,14 +166,12 @@ export default function CCPOHeatmapPage() {
             />
           </svg>
 
-          {/* Concentric Radar Rings matching Figure 26 */}
           <div className="relative w-[290px] h-[290px] sm:w-[350px] sm:h-[350px] rounded-full border border-slate-300/90 flex items-center justify-center">
             <div className="w-[210px] h-[210px] sm:w-[250px] sm:h-[250px] rounded-full border border-slate-300/90 flex items-center justify-center">
               <div className="w-[125px] h-[125px] sm:w-[150px] sm:h-[150px] rounded-full border border-slate-300/90 bg-white/20 backdrop-blur-[1px]" />
             </div>
           </div>
 
-          {/* Header Badge Inside Map */}
           <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-xl px-3.5 py-2 shadow-xs">
             <div className="text-xs font-extrabold text-[#0B2240]">
               Cebu City — 80 Barangays
@@ -190,7 +181,6 @@ export default function CCPOHeatmapPage() {
             </div>
           </div>
 
-          {/* Red High-Concentration Cluster (12 — Labangon) */}
           <button
             type="button"
             onClick={() =>
@@ -209,7 +199,6 @@ export default function CCPOHeatmapPage() {
             </span>
           </button>
 
-          {/* Orange Medium Cluster (6 — Mabolo) */}
           <button
             type="button"
             onClick={() =>
@@ -227,7 +216,6 @@ export default function CCPOHeatmapPage() {
             </span>
           </button>
 
-          {/* Amber Medium Cluster (4 — Guadalupe) */}
           <button
             type="button"
             onClick={() =>
@@ -245,7 +233,6 @@ export default function CCPOHeatmapPage() {
             </span>
           </button>
 
-          {/* Green Lower Activity Zones (Pardo 3 & Talamban 2) */}
           <button
             type="button"
             onClick={() =>
@@ -280,7 +267,6 @@ export default function CCPOHeatmapPage() {
             </span>
           </button>
 
-          {/* Selected Barangay Floating Inspector Card */}
           {selectedBarangay && (
             <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3.5 text-xs shadow-lg max-w-[230px]">
               <div className="flex items-center justify-between gap-2 mb-1">
@@ -300,7 +286,6 @@ export default function CCPOHeatmapPage() {
             </div>
           )}
 
-          {/* Legend Box at Bottom Left (Exact Figure 26 p. 89) */}
           <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl px-3.5 py-2.5 text-[11px] text-slate-700 space-y-1.5 shadow-xs">
             <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
               Hotspot Legend
@@ -320,9 +305,7 @@ export default function CCPOHeatmapPage() {
           </div>
         </div>
 
-        {/* Right Column: Top Hotspot Barangays + Case Summary + Export Button (Figure 26 p. 89) */}
         <div className="space-y-5 flex flex-col justify-between">
-          {/* Top Hotspot Barangays Card */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
             <h3 className="text-sm font-extrabold text-[#0B2240] mb-1">
               Top Hotspot Barangays
@@ -348,7 +331,6 @@ export default function CCPOHeatmapPage() {
             </div>
           </div>
 
-          {/* Case Summary Card */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
             <h3 className="text-sm font-extrabold text-[#0B2240] mb-3">
               Case Summary
@@ -369,7 +351,6 @@ export default function CCPOHeatmapPage() {
             </div>
           </div>
 
-          {/* Export Heatmap Report Button */}
           <button
             type="button"
             onClick={handleExport}

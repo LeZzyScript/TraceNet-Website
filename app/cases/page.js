@@ -7,34 +7,15 @@ import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { useLiveCases } from "@/lib/useLiveCases";
 
-const DEMO_CASES = [
-  {
-    name: "Maria Santos, 34",
-    id: "#2038",
-    href: "/case-status",
-    resolved: false,
-    badge: { label: "● Match", className: "bg-teal-100 text-[#0E8FA3]" },
-    note: "87% AI confidence · Awaiting your confirmation",
-  },
-  {
-    name: "Bert Navarro, 44",
-    id: "#2035",
-    href: "/case-status",
-    resolved: true,
-    badge: { label: "Resolved", className: "bg-[#EEF0F4] text-ink-500" },
-    note: "Reunited with family on July 3",
-  },
-];
-
 export default function CasesPage() {
   const { user } = useAuth();
   const { live, reports, bestByReport } = useLiveCases();
   const [filter, setFilter] = useState("all");
 
   const cases = useMemo(() => {
-    if (!live || !user) return DEMO_CASES;
+    if (!live || !user) return [];
     const mine = reports.filter((r) => r.reportedByUid === user.uid);
-    if (mine.length === 0) return DEMO_CASES;
+    if (mine.length === 0) return [];
 
     return mine.map((r) => {
       const match = bestByReport.get(r.id);

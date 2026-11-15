@@ -80,7 +80,6 @@ export default function CitizenProfilePage() {
           </div>
         )}
 
-        {/* Profile Summary Banner (Figure 22 p. 84) */}
         <Card className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-brand-600 text-white font-head font-extrabold text-xl flex items-center justify-center shadow-sm">
@@ -111,7 +110,6 @@ export default function CitizenProfilePage() {
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Account Information Form */}
           <Card className="p-6">
             <SectionLabel>Personal &amp; Contact Details</SectionLabel>
             <form onSubmit={handleSave} className="space-y-3">
@@ -143,7 +141,6 @@ export default function CitizenProfilePage() {
             </form>
           </Card>
 
-          {/* Notification & Privacy Settings */}
           <div className="space-y-6">
             <Card className="p-6">
               <SectionLabel>Alert &amp; Notification Toggles</SectionLabel>
@@ -191,7 +188,6 @@ export default function CitizenProfilePage() {
               </div>
             </Card>
 
-            {/* Safety Tips (Workflow Fig 3.2) */}
             <Card className="p-6 bg-slate-50/70">
               <SectionLabel>Reporting Safety Tips (Fig 3.2)</SectionLabel>
               <ul className="space-y-2 text-xs text-ink-700 list-disc pl-4 leading-relaxed">
@@ -203,7 +199,6 @@ export default function CitizenProfilePage() {
           </div>
         </div>
 
-        {/* Cebu City Emergency Hotlines Directory (Workflow Fig 3.2) */}
         <Card className="p-6">
           <SectionLabel>Cebu City Emergency Hotlines &amp; Coordination Desks</SectionLabel>
           <div className="grid sm:grid-cols-2 gap-3">

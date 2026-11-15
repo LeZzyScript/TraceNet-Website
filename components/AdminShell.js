@@ -103,7 +103,6 @@ export default function AdminShell({
         </button>
       </div>
 
-      {/* Compliance Status */}
       <div className="px-4 pt-4 pb-2">
         <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
@@ -191,12 +190,10 @@ export default function AdminShell({
 
   return (
     <div className="min-h-screen flex bg-[#F4F7FB] text-slate-900">
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col bg-[#0B2240] text-white shrink-0 select-none shadow-xl">
         <SidebarContent />
       </aside>
 
-      {/* Mobile Drawer */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
@@ -209,7 +206,6 @@ export default function AdminShell({
         </div>
       )}
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 pb-16 lg:pb-0">
         <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-30">
           <div className="flex items-center gap-3 min-w-0">
@@ -250,7 +246,6 @@ export default function AdminShell({
           {children}
         </main>
 
-        {/* Mobile Bottom Tab Bar */}
         <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 grid grid-cols-4 h-14 shadow-lg">
           {nav.slice(0, 4).map((item) => {
             const active = activeTab === item.id;

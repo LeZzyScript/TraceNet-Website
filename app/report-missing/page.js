@@ -15,26 +15,6 @@ import { submitWebReport } from "@/lib/liveData";
 import { isCloudinaryConfigured, uploadPhoto } from "@/lib/cloudinary";
 import { submitMissingReport } from "@/lib/db";
 
-// Sample values are only used in demo mode. With Firebase configured the form
-// starts empty so a sample person can never be filed as a real report.
-const DEMO_FORM = {
-  firstName: "Maria",
-  lastName: "Santos",
-  age: "34",
-  gender: "Female",
-  lastSeenLocation: "Brgy. Labangon, Cebu City",
-  latitude: 10.308,
-  longitude: 123.875,
-  clothingDescription: "White blouse, blue jeans, wearing eyeglasses",
-  dateMissing: "2026-06-28",
-  timeMissing: "09:00",
-  circumstances: "Left home for the market in the morning and did not return.",
-  reporterName: "Juan dela Cruz",
-  relationship: "Son / Family member",
-  contactNumber: "0917-123-4567",
-  barangay: "Labangon",
-};
-
 const EMPTY_FORM = {
   firstName: "",
   lastName: "",
@@ -59,7 +39,7 @@ export default function ReportMissingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [photoFile, setPhotoFile] = useState(null);
-  const [formData, setFormData] = useState(isFirebaseConfigured ? EMPTY_FORM : DEMO_FORM);
+  const [formData, setFormData] = useState(EMPTY_FORM);
 
   const needsSignIn = isFirebaseConfigured && !authLoading && !user;
 
@@ -67,7 +47,6 @@ export default function ReportMissingPage() {
     e.preventDefault();
     setError("");
 
-    // Live path: write to Firestore, same shape as the mobile app.
     if (isFirebaseConfigured) {
       if (!user) {
         setError("Please sign in to submit a report.");
@@ -124,7 +103,6 @@ export default function ReportMissingPage() {
       return;
     }
 
-    // Demo path (no Firebase configured): original behaviour.
     setSubmitting(true);
     try {
       const res = await submitMissingReport(formData);
@@ -166,7 +144,6 @@ export default function ReportMissingPage() {
               (the same account works in the TraceNet mobile app).
             </div>
           )}
-          {/* Step 1: Person details (Figure 13) */}
           <Card className="p-6">
             <SectionLabel>Person details (Step 1 of 3)</SectionLabel>
             <div className="mb-4">
@@ -252,7 +229,6 @@ export default function ReportMissingPage() {
             </Field>
           </Card>
 
-          {/* Step 2: Last seen details */}
           <Card className="p-6">
             <SectionLabel>Last seen details (Step 2 of 3)</SectionLabel>
             <div className="grid grid-cols-2 gap-4">
@@ -282,7 +258,6 @@ export default function ReportMissingPage() {
             </Field>
           </Card>
 
-          {/* Step 3: Reporter contact info */}
           <Card className="p-6">
             <SectionLabel>Your contact information (Step 3 of 3)</SectionLabel>
             <Field label="Your name">

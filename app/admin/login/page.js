@@ -8,7 +8,6 @@ import { friendlyAuthError, signInForPortal } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  // Figure 33.1 sample values are only prefilled in demo mode.
   const [email, setEmail] = useState(
     isFirebaseConfigured ? "" : "Adm. Rosa Flores — rosa@admin.gov"
   );
@@ -37,7 +36,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#0E2646] flex items-center justify-center p-4">
       <div className="w-full max-w-[380px] bg-white rounded-xl shadow-2xl overflow-hidden">
-        {/* Top Navy Header Block matching Figure 33.1 (Admin Portal Login) */}
         <div className="bg-[#122E54] pt-7 pb-6 px-8 text-center">
           <div className="w-11 h-11 rounded-lg bg-[#2563EB] mx-auto mb-3 flex items-center justify-center shadow-inner">
             <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -52,7 +50,6 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        {/* Form Body */}
         <form onSubmit={handleLogin} className="p-7 space-y-4">
           <div>
             <label className="block text-[11px] font-bold text-[#334155] mb-1.5">

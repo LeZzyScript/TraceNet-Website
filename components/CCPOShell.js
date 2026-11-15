@@ -79,7 +79,6 @@ export default function CCPOShell({
 
   const SidebarContent = () => (
     <>
-      {/* Brand Header */}
       <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#1967D2] flex items-center justify-center shadow-inner text-white font-extrabold text-sm">
@@ -103,7 +102,6 @@ export default function CCPOShell({
         </button>
       </div>
 
-      {/* System Status Pill */}
       <div className="px-4 pt-4 pb-2">
         <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -113,7 +111,6 @@ export default function CCPOShell({
         </div>
       </div>
 
-      {/* Navigation Links */}
       <nav className="flex-1 px-3 py-3 space-y-1">
         <div className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-[#6A88AC]">
           Command Navigation
@@ -167,7 +164,6 @@ export default function CCPOShell({
         </Link>
       </nav>
 
-      {/* Bottom Officer Profile Card */}
       <div className="p-4 border-t border-white/10 bg-[#081930]">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-full bg-[#1967D2]/30 border border-[#1967D2] flex items-center justify-center text-xs font-extrabold text-white shrink-0">
@@ -194,12 +190,10 @@ export default function CCPOShell({
 
   return (
     <div className="min-h-screen flex bg-[#F4F7FB] text-slate-900">
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col bg-[#0B2240] text-white shrink-0 select-none shadow-xl">
         <SidebarContent />
       </aside>
 
-      {/* Mobile Slide-Over Sidebar Drawer */}
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex">
           <div
@@ -212,9 +206,7 @@ export default function CCPOShell({
         </div>
       )}
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 pb-16 lg:pb-0">
-        {/* Top Sticky Header */}
         <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-30">
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -254,12 +246,10 @@ export default function CCPOShell({
           </div>
         </header>
 
-        {/* Page Container */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
 
-        {/* Mobile Bottom Tab Bar for Mobile-Web Orientation */}
         <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 grid grid-cols-4 h-14 shadow-lg">
           {nav.slice(0, 4).map((item) => {
             const active = pathname === item.href.split("?")[0];

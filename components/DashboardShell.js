@@ -28,7 +28,6 @@ export default function DashboardShell({ children }) {
     try {
       await signOutUser();
     } catch {
-      // Ignore if in demo mode
     }
     if (typeof window !== "undefined") {
       window.localStorage.removeItem("tracenet_demo_account");
@@ -38,7 +37,6 @@ export default function DashboardShell({ children }) {
 
   return (
     <div className="min-h-screen flex bg-paper pb-16 md:pb-0">
-      {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col bg-navy-950 text-white/80 shrink-0">
         <div className="flex items-center gap-2.5 px-6 h-[72px] border-b border-white/10">
           <Image src="/logo-icon.png" alt="TraceNet" width={30} height={30} className="rounded-[8px]" />
@@ -79,7 +77,6 @@ export default function DashboardShell({ children }) {
         </div>
       </aside>
 
-      {/* Mobile Slide-Over Drawer */}
       {drawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
           <div
@@ -172,7 +169,6 @@ export default function DashboardShell({ children }) {
         </main>
       </div>
 
-      {/* Fixed Mobile Bottom Navigation Bar */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 h-14 bg-white border-t border-line flex items-center justify-around z-30">
         {nav.map((item) => {
           const active = pathname === item.href;

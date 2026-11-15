@@ -16,27 +16,6 @@ import {
   recommendFiswgTier,
 } from "@/lib/aiMatcher";
 
-const DEMO_MISSING = {
-  id: "demo-2038",
-  caseCode: "#2038",
-  name: "Maria Santos",
-  age: 34,
-  sex: "Female",
-  location: "Brgy. Labangon, Cebu City",
-  description: "White blouse, blue jeans, wearing eyeglasses",
-  photoUrl: null,
-};
-
-const DEMO_SIGHTING = {
-  id: "demo-sighting-101",
-  name: "Unidentified F.",
-  age: 34,
-  sex: "Female",
-  location: "Brgy. Mabolo, Cebu City",
-  description: "Disoriented, wearing white blouse, blue jeans, eyeglasses",
-  photoUrl: null,
-};
-
 function MatchAlertInner() {
   const searchParams = useSearchParams();
   const matchIdParam = searchParams.get("id");
@@ -50,15 +29,14 @@ function MatchAlertInner() {
       : matches.find((m) => m.status === "pending") || matches[0];
     if (!targetMatch) return null;
 
-    const missing =
-      allReports.find((r) => r.id === targetMatch.missingReportId) || DEMO_MISSING;
-    const sighting =
-      allReports.find((r) => r.id === targetMatch.sightingReportId) || DEMO_SIGHTING;
+    const missing = allReports.find((r) => r.id === targetMatch.missingReportId);
+    const sighting = allReports.find((r) => r.id === targetMatch.sightingReportId);
+    if (!missing || !sighting) return null;
     return { match: targetMatch, missing, sighting };
   }, [live, matches, allReports, matchIdParam]);
 
-  const missingReport = liveBundle?.missing || DEMO_MISSING;
-  const sightingReport = liveBundle?.sighting || DEMO_SIGHTING;
+  const missingReport = liveBundle?.missing || {};
+  const sightingReport = liveBundle?.sighting || {};
 
   const computed = useMemo(
     () =>
@@ -76,7 +54,7 @@ function MatchAlertInner() {
     Math.round((0.8 * facialScore + 0.2 * textScore) * 10) / 10;
   const displayOverall = liveBundle?.match?.confidence
     ? Number(liveBundle.match.confidence).toFixed(1)
-    : "87.0";
+    : weightedOverall.toFixed(1);
 
   const matchedAttributes =
     liveBundle?.match?.matchedAttributes?.length
@@ -131,6 +109,28 @@ function MatchAlertInner() {
 
   const activeTierObj =
     FISWG_TIERS.find((t) => t.tier === selectedTier) || FISWG_TIERS[3];
+
+  if (!liveBundle) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <Card className="p-8 text-center space-y-3">
+          <div className="text-3xl">🤖</div>
+          <h2 className="font-head font-extrabold text-xl text-navy-900">
+            No Pending AI Match Alerts
+          </h2>
+          <p className="text-sm text-ink-500 max-w-md mx-auto">
+            When a missing person report and a sighting match via the 80/20 AI engine,
+            the candidate pair will appear here for forensic verification.
+          </p>
+          <div className="pt-2">
+            <Link href="/dashboard">
+              <Button variant="outline">Return to Dashboard</Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -194,7 +194,6 @@ function MatchAlertInner() {
       ) : (
         <div className="space-y-5">
           <Card className="p-6">
-            {/* Header Badge */}
             <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
               <div className="inline-flex items-center gap-2 bg-teal-100 text-[#0E8FA3] text-xs font-extrabold px-3.5 py-1.5 rounded-full">
                 ✨ 80/20 Multimodal AI Pipeline Active
@@ -204,11 +203,9 @@ function MatchAlertInner() {
               </span>
             </div>
 
-            {/* Side-by-Side Profiles (Figure 14 / Fig 17) */}
             <div className="flex items-center gap-3 sm:gap-4 mb-6">
               <div className="flex-1 text-center p-3.5 rounded-lg bg-paper border border-line">
                 {missingReport.photoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={missingReport.photoUrl}
                     alt={missingReport.name}
@@ -232,7 +229,6 @@ function MatchAlertInner() {
 
               <div className="flex-1 text-center p-3.5 rounded-lg bg-paper border border-line">
                 {sightingReport.photoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={sightingReport.photoUrl}
                     alt={sightingReport.name}
@@ -253,7 +249,6 @@ function MatchAlertInner() {
               </div>
             </div>
 
-            {/* OBJECTIVE 2: 80/20 WEIGHTED SIMILARITY BREAKDOWN */}
             <div className="bg-slate-50 border border-line rounded-lg p-4 mb-6 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-ink-500">
@@ -264,7 +259,6 @@ function MatchAlertInner() {
                 </span>
               </div>
 
-              {/* 1. Facial Recognition Similarity (80% Weight) */}
               <div>
                 <div className="flex justify-between items-center text-xs font-bold mb-1">
                   <span className="text-navy-900 flex items-center gap-1.5">
@@ -288,7 +282,6 @@ function MatchAlertInner() {
                 </div>
               </div>
 
-              {/* 2. Text Description Similarity (20% Weight) */}
               <div>
                 <div className="flex justify-between items-center text-xs font-bold mb-1">
                   <span className="text-navy-900 flex items-center gap-1.5">
@@ -312,7 +305,6 @@ function MatchAlertInner() {
                 </div>
               </div>
 
-              {/* Weighted Aggregate Score */}
               <div className="pt-2.5 border-t border-dashed border-line flex justify-between items-center">
                 <div>
                   <div className="text-xs font-extrabold text-navy-900">
@@ -329,7 +321,6 @@ function MatchAlertInner() {
               </div>
             </div>
 
-            {/* Matched Attributes Checklist (Figure 14) */}
             <div className="flex flex-wrap gap-2 mb-2">
               {matchedAttributes.map((attr) => (
                 <span
@@ -342,7 +333,6 @@ function MatchAlertInner() {
             </div>
           </Card>
 
-          {/* FISWG 5-TIER MORPHOLOGICAL EVALUATION RUBRIC (RRL p. 23, AI-PU-002 / IT-P4) */}
           <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
               <div>
@@ -360,7 +350,6 @@ function MatchAlertInner() {
               </span>
             </div>
 
-            {/* 6 Anatomical Feature Checkboxes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
               {FISWG_FEATURES.map((feat) => {
                 const checked = checkedFeatures.includes(feat.id);
@@ -388,7 +377,6 @@ function MatchAlertInner() {
               })}
             </div>
 
-            {/* 5-Tier Forensic Confidence Scale */}
             <div className="mb-4">
               <div className="text-xs font-bold text-navy-900 mb-2">
                 Select FISWG Forensic Conclusion Tier (1–5)
@@ -433,7 +421,6 @@ function MatchAlertInner() {
               </p>
             </div>
 
-            {/* Reviewer Notes */}
             <div className="mb-5">
               <label className="block text-xs font-bold text-navy-900 mb-1">
                 Morphological Verification Remarks (Optional)
@@ -447,7 +434,6 @@ function MatchAlertInner() {
               />
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 onClick={() => handleDecision("confirmed")}
@@ -467,7 +453,6 @@ function MatchAlertInner() {
               </Button>
             </div>
 
-            {/* RA 10173 Data Privacy Notice (IT-P6) */}
             <div className="mt-5 pt-4 border-t border-line flex items-start gap-2.5 text-[11px] text-ink-400 leading-relaxed">
               <span className="text-sm shrink-0">🔒</span>
               <span>

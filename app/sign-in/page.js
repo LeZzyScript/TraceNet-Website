@@ -35,8 +35,6 @@ export default function SignInPage() {
       return;
     }
 
-    // Demo mode (Firebase not configured): check the local demo-account flag
-    // set by the Create account page instead of a real credential check.
     const hasAccount = window.localStorage.getItem("tracenet_demo_account") === "true";
     if (hasAccount) {
       setError("");

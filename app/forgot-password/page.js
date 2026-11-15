@@ -8,13 +8,8 @@ import { auth, isFirebaseConfigured } from "@/lib/firebase";
 import { Field, Input } from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
-/**
- * Manuscript Figures 13 & 14 (pp. 75–76):
- *  - Step 1 (Figure 13): Forgot Password Screen (Email / Phone input -> Send Reset Code)
- *  - Step 2 (Figure 14): Enter Reset Code Screen (6-digit OTP boxes + New Password)
- */
 export default function ForgotPasswordPage() {
-  const [step, setStep] = useState("request"); // "request" | "verify" | "done"
+  const [step, setStep] = useState("request");
   const [email, setEmail] = useState("juan@example.com");
   const [code, setCode] = useState(["4", "8", "2", "9", "1", "6"]);
   const [newPassword, setNewPassword] = useState("");
@@ -101,7 +96,6 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        {/* Step Switcher Pills (Figures 13 & 14) */}
         <div className="flex justify-center gap-2 mb-5">
           <button
             type="button"

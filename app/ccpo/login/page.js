@@ -8,8 +8,6 @@ import { friendlyAuthError, signInForPortal } from "@/lib/auth";
 
 export default function CCPOLoginPage() {
   const router = useRouter();
-  // Manuscript Figure 23 shows these sample values; they are only prefilled in
-  // demo mode. With Firebase configured the officer types real credentials.
   const [badgeEmail, setBadgeEmail] = useState(
     isFirebaseConfigured ? "" : "PO2 dela Cruz — ccpo@cebu.gov.ph"
   );
@@ -37,16 +35,13 @@ export default function CCPOLoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0E2646] px-4 py-12">
-      {/* Centered White Card with Dark Navy Header Block (Exact Figure 23 p. 86) */}
       <div className="w-full max-w-[380px] bg-white rounded-xl shadow-2xl overflow-hidden border border-white/10">
-        {/* Top Navy Header Block with Shield Icon */}
         <div className="bg-[#122E54] py-6 flex items-center justify-center">
           <div className="w-12 h-12 rounded-xl bg-[#1967D2] border border-white/20 flex items-center justify-center shadow-md">
             <span className="text-white text-xl">🛡️</span>
           </div>
         </div>
 
-        {/* Form Body */}
         <div className="px-7 pt-5 pb-6">
           <div className="text-center mb-5">
             <h1 className="font-head font-extrabold text-base text-[#0B2240]">
